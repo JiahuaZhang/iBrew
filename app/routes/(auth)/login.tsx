@@ -4,20 +4,18 @@ import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-butto
 import { SocialsProvider } from 'remix-auth-socials';
 import { authenticator } from '~/services/auth.server';
 
-export const loader: LoaderFunction = async ({ request }) => {
-  return authenticator.isAuthenticated(request, {
-    successRedirect: '/home'
-  });
+export const loader: LoaderFunction = async ({ request }) => authenticator
+  .isAuthenticated(request, { successRedirect: '/' });
+
+export const LoginPanel = ({ className }: { className?: string; }) => {
+  const submit = useSubmit();
+
+  return <div className={className}>
+    <GoogleLoginButton onClick={() => submit({}, { method: 'post', action: `/auth/${SocialsProvider.GOOGLE}` })} />
+    <FacebookLoginButton onClick={() => submit({}, { method: 'post', action: `/auth/${SocialsProvider.FACEBOOK}` })} />
+  </div>;
 };
 
 export default function Login() {
-  const submit = useSubmit();
-
-  return (
-    <div className='max-w-sm mx-auto mt-32'>
-      <GoogleLoginButton onClick={() => submit({}, { method: 'post', action: `/auth/${SocialsProvider.GOOGLE}` })} />
-      <br />
-      <FacebookLoginButton onClick={() => submit({}, { method: 'post', action: `/auth/${SocialsProvider.FACEBOOK}` })} />
-    </div>
-  );
+  return <LoginPanel className="max-w-sm mx-auto mt-32 grid gap-4" />;
 }
