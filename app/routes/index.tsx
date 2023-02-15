@@ -1,32 +1,18 @@
-export default function Index() {
-  return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div>
-  );
-}
+import type { LoaderFunction } from 'react-router';
+import UserSidebar from '~/components/UserSidebar';
+import { authenticator } from '~/services/auth.server';
+
+export const loader: LoaderFunction = ({ request }) => {
+  return authenticator.isAuthenticated(request);
+};
+
+const Index = () => {
+  return <div className='border-2 border-blue-200 w-full h-screen grid grid-cols-[max-content_1fr]'>
+    <UserSidebar />
+    <main>
+      main component
+    </main>
+  </div>;
+};
+
+export default Index;

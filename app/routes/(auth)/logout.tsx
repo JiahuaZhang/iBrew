@@ -3,7 +3,7 @@ import type { LoaderFunction } from 'react-router';
 import { authenticator } from '../../services/auth.server';
 
 export const loader: LoaderFunction = async ({ request }) =>
-  await authenticator.logout(request, { redirectTo: '/home' });
+  await authenticator.logout(request, { redirectTo: '/' });
 
 export const action: ActionFunction = async ({ request }) =>
-  await authenticator.logout(request, { redirectTo: '/home' });
+  await authenticator.logout(request, { redirectTo: '/' });

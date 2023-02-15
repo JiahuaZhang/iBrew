@@ -3,6 +3,6 @@ import { authenticator } from '../../services/auth.server';
 
 export const loader: LoaderFunction = ({ request, params }) =>
   authenticator.authenticate(params.provider ?? '', request, {
-    successRedirect: '/home',
+    successRedirect: '/',
     failureRedirect: '/login'
   });
