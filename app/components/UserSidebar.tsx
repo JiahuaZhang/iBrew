@@ -1,3 +1,4 @@
+import { FieldTimeOutlined, HomeFilled, ToolOutlined } from '@ant-design/icons';
 import { Link, useLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
@@ -12,12 +13,13 @@ enum AvatarDisplay {
 
 const UserSidebar = () => {
   const user = useLoaderData();
-  const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.img);
+  const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.initial);
+  // @ts-ignore @temp
   const nameInitials = user?.displayName.split(' ').map(s => s[0].toUpperCase()).join('') ?? '';
 
   return <aside className='border-2 border-purple-200' >
     {
-      user && <section className='cursor-pointer m-1'
+      user && <section className='cursor-pointer m-1 grid grid-flow-col justify-center align-center'
         onDoubleClick={() => {
           setAvatarDisplay(prev => ({
             [AvatarDisplay.img]: AvatarDisplay.initial,
@@ -29,9 +31,13 @@ const UserSidebar = () => {
           <Link to='/logout'>Log out</Link>
         </Button>} >
           {avatarDisplay === AvatarDisplay.img &&
-            <Avatar src={user.photos[0].value} />}
+            <Avatar src={user.photos[0].value} size='large' />}
           {avatarDisplay === AvatarDisplay.initial &&
-            <Avatar className={`${colors[nameInitials.charCodeAt(0) % colors.length]}`} shape='circle' >
+            <Avatar
+              className={`${colors[nameInitials.charCodeAt(0) % colors.length]}`}
+              size='large'
+              shape='circle'
+            >
               {nameInitials}
             </Avatar>
           }
@@ -43,6 +49,21 @@ const UserSidebar = () => {
         <LoginPanel className='grid gap-2' />
       </section>
     }
+
+    <Link to='/' className='grid m-4' >
+      {/* todo, color filled should be changed base on whether at home page or not */}
+      <HomeFilled className='text-sky-400 text-2xl' />
+    </Link>
+
+    <div>
+      <header className='pl-2 bg-lime-100'>
+        <ToolOutlined className='text-2xl' />
+      </header>
+      <section className='bg-amber-100 p-2 pl-4'>
+        <FieldTimeOutlined className='text-2xl' />
+      </section>
+    </div>
+
   </aside >;
 };
 
