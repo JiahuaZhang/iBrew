@@ -30,6 +30,7 @@ const timerOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 export const Timer = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [error, setError] = useState<{ message?: string, id?: NodeJS.Timeout; }>({});
   const [hint, setHint] = useState<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
 
@@ -41,7 +42,9 @@ export const Timer = () => {
   };
 
   return <section className='p-2 pl-4'>
-    <FieldTimeOutlined className='text-2xl cursor-pointer' />
+    <FieldTimeOutlined
+      onClick={() => setIsExpanded(state => !state)}
+      className='text-2xl cursor-pointer hover:text-blue-800' />
     {/* smart count down -- in time -- when minimize */}
     {/* could pause timer? one click to pause, one click to resume */}
     {/* when paused -- gray out color / border */}
@@ -50,10 +53,8 @@ export const Timer = () => {
     {/* double click to expand to setting? */}
     {/* when minimize, if in count down, there's progress bar style circle border */}
 
-    <div className='w-[10rem]'>
-      {/* add a little bit of animation */}
-      {/* expaned timer */}
-
+    <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
+    >
       {/* when disable, gray border */}
       <span>Timer</span>
 
@@ -182,7 +183,6 @@ export const Timer = () => {
           className='p-0 text-xs'
         />}
       </div>
-
     </div>
   </section>;
 };
