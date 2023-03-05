@@ -1,6 +1,6 @@
 import { FieldTimeOutlined, PauseCircleFilled, PlayCircleFilled, UndoOutlined } from '@ant-design/icons';
+import { signal } from '@preact/signals-react';
 import { Alert, Tooltip } from 'antd';
-import { useState } from 'react';
 
 const timerOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
   if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
@@ -27,23 +27,23 @@ const timerOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
   }
 };
 
+const isPlaying = signal(false);
+const isExpanded = signal(true);
+const isMuted = signal(false);
+const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
+const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
+
+const updateError = (message: string) => {
+  if (error.value.id) clearTimeout(error.value.id);
+  const id = setTimeout(() => error.value = ({ message: '', id: undefined }), 3000);
+
+  error.value = ({ message, id });
+};
+
 export const Timer = () => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [error, setError] = useState<{ message?: string, id?: NodeJS.Timeout; }>({});
-  const [hint, setHint] = useState<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
-
-  const updateError = (message: string) => {
-    if (error.id) clearTimeout(error.id);
-    const id = setTimeout(() => setError({ message: '', id: undefined }), 3000);
-
-    setError({ message, id });
-  };
-
   return <section className='p-2 pl-4'>
     <FieldTimeOutlined
-      onClick={() => setIsExpanded(state => !state)}
+      onClick={() => isExpanded.value = !isExpanded.value}
       className='text-2xl cursor-pointer hover:text-blue-800' />
     {/* smart count down -- in time -- when minimize */}
     {/* could pause timer? one click to pause, one click to resume */}
@@ -53,7 +53,7 @@ export const Timer = () => {
     {/* double click to expand to setting? */}
     {/* when minimize, if in count down, there's progress bar style circle border */}
 
-    <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
+    <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded.value ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
     >
       {/* when disable, gray border */}
       <span>Timer</span>
@@ -133,8 +133,8 @@ export const Timer = () => {
         </span>
       </div>
 
-      {error.message && <Alert
-        message={error.message}
+      {error.value.message && <Alert
+        message={error.value.message}
         type="warning"
         showIcon
         closable
@@ -142,41 +142,41 @@ export const Timer = () => {
       />}
 
       <div className='grid grid-flow-col items-center justify-between w-[6.5rem] m-auto'>
-        {isPlaying && <PauseCircleFilled
-          onClick={() => setIsPlaying(false)}
+        {isPlaying.value && <PauseCircleFilled
+          onClick={() => isPlaying.value = false}
           className='text-blue-400 cursor-pointer' />}
-        {!isPlaying && <PlayCircleFilled
-          onClick={() => setIsPlaying(true)}
+        {!isPlaying.value && <PlayCircleFilled
+          onClick={() => isPlaying.value = true}
           className='text-blue-400 cursor-pointer' />}
 
         <Tooltip title='reset' >
           <UndoOutlined
             onClick={(event) => {
               if (event.detail === 1) {
-                if (hint.message) return;
+                if (hint.value.message) return;
 
-                const id1 = setTimeout(() => setHint({ message: 'Double click to reset' }), 500);
-                const id2 = setTimeout(() => setHint({}), 3000);
-                setHint({ ids: [id1, id2] });
+                const id1 = setTimeout(() => hint.value = ({ message: 'Double click to reset' }), 500);
+                const id2 = setTimeout(() => hint.value = ({}), 3000);
+                hint.value = ({ ids: [id1, id2] });
               }
             }}
             onDoubleClick={() => {
-              hint.ids?.forEach(clearTimeout);
-              setHint({});
+              hint.value.ids?.forEach(clearTimeout);
+              hint.value = ({});
               // todo, reset
             }}
             className='text-blue-400 cursor-pointer select-none' />
         </Tooltip>
-        {isMuted && <span
-          onClick={() => setIsMuted(false)}
+        {isMuted.value && <span
+          onClick={() => isMuted.value = false}
           className='cursor-pointer' >🔇</span>}
-        {!isMuted && <span
-          onClick={() => setIsMuted(true)}
+        {!isMuted.value && <span
+          onClick={() => isMuted.value = true}
           className='cursor-pointer'>🔊</span>}
       </div>
       <div>
-        {hint.message && <Alert
-          message={hint.message}
+        {hint.value.message && <Alert
+          message={hint.value.message}
           type="warning"
           showIcon
           closable
