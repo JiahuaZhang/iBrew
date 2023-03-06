@@ -1,17 +1,33 @@
 import { FieldTimeOutlined, PauseCircleFilled, PlayCircleFilled, UndoOutlined } from '@ant-design/icons';
-import { signal } from '@preact/signals-react';
+import { signal, Signal } from '@preact/signals-react';
 import { Alert, Tooltip } from 'antd';
 
-const timerOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+const isPlaying = signal(false);
+const isExpanded = signal(true);
+const isMuted = signal(false);
+const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
+const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
+const minute = signal(25);
+const second = signal(0);
+const cachedTime = signal({ minute: minute.value, second: second.value });
+const timer = signal<NodeJS.Timeout | undefined>(undefined);
+
+const updateCacheTime = () => {
+  cachedTime.value = {
+    minute: minute.value,
+    second: second.value
+  };
+};
+
+const timerOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, state: Signal<number>) => {
   if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
 
   const input = event.target as HTMLInputElement;
   if (input.value === '') {
-    input.value = 'ArrowUp' === event.key ? '1' : '60';
+    state.value = 'ArrowUp' === event.key ? 1 : 60;
+    updateCacheTime();
     return;
   };
-
-  if (!/^\d+$/.test(input.value)) return;
 
   let number = Number(input.value);
   if (event.key === 'ArrowUp') {
@@ -23,17 +39,10 @@ const timerOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 
   if (number >= 0 && number <= 60) {
     event.preventDefault();
-    input.value = `${number}`;
+    state.value = number;
+    updateCacheTime();
   }
 };
-
-const isPlaying = signal(false);
-const isExpanded = signal(true);
-const isMuted = signal(false);
-const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
-const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
-const hour = signal(25);
-const minute = signal(0);
 
 const updateError = (message: string) => {
   if (error.value.id) clearTimeout(error.value.id);
@@ -42,7 +51,55 @@ const updateError = (message: string) => {
   error.value = ({ message, id });
 };
 
+const countDown = () => {
+  const id = setInterval(() => {
+    if (minute.value === 0 && second.value === 0) {
+      // todo, ring --
+      isPlaying.value = false;
+      return pause();
+    }
+
+    if (second.value > 0) {
+      second.value = second.value - 1;
+    } else {
+      minute.value = minute.value - 1;
+      second.value = 59;
+    }
+  }, 1000);
+
+  timer.value = id;
+};
+
+const pause = () => {
+  clearInterval(timer.value);
+  timer.value = undefined;
+};
+
 export const Timer = () => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>, state: Signal<number>, errorMessage: string) => {
+    const input = event.target;
+
+    if (/^\d+$/.test(input.value)) {
+      const number = Number(input.value);
+
+      if (number <= 60) return state.value = number;
+
+      updateError(errorMessage);
+
+      if (number <= 99) return state.value = 60;
+      state.value = Number(number.toString().slice(0, 2));
+    } else {
+      if (input.value === '') return state.value = 0;
+
+      updateError('Please type number');
+
+      const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
+
+      if (Number(newNumber) > 60) return state.value = Number(newNumber.slice(0, 1));
+      state.value = Number(newNumber);
+    }
+  };
+
   return <section className='p-2 pl-4'>
     <FieldTimeOutlined
       onClick={() => isExpanded.value = !isExpanded.value}
@@ -64,33 +121,14 @@ export const Timer = () => {
         <span
           className='border-[1px] border-blue-100 inline-grid h-[3rem] grid-flow-col items-center focus-within:border-blue-300 text-2xl pr-1 focus-within:z-2 focus-within:relative rounded-l'>
           <input
-            value={hour.value}
+            disabled={isPlaying.value}
+            value={minute.value}
             className='border-blue-200 max-w-[2.25rem] focus-visible:outline-none text-right'
             onChange={event => {
-              const input = event.target;
-
-              if (/^\d+$/.test(input.value)) {
-                const number = Number(input.value);
-
-                if (number <= 60) return hour.value = number;
-
-                updateError('Maximum m is 60');
-
-                if (number <= 99) return hour.value = 60;
-
-                hour.value = Number(number.toString().slice(0, 2));
-              } else {
-                if (input.value === '') return hour.value = 0;
-
-                updateError('Please type number');
-                const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
-
-                if (Number(newNumber) > 60) return hour.value = Number(newNumber.slice(0, 1));
-
-                hour.value = Number(newNumber);
-              }
+              onChange(event, minute, 'Maximum s is 60');
+              updateCacheTime();
             }}
-            onKeyDown={timerOnKeyDown}
+            onKeyDown={e => timerOnKeyDown(e, minute)}
           />
           <span>
             <span className='text-sm text-gray-500' >m</span>
@@ -101,33 +139,14 @@ export const Timer = () => {
           className='border-[1px] border-blue-100 inline-grid h-[3rem] grid-flow-col items-center focus-within:border-blue-300 text-2xl pr-1 ml-[-1px] rounded-r'
         >
           <input
-            value={minute.value}
+            value={second.value}
+            disabled={isPlaying.value}
             className='border-blue-200 max-w-[2.25rem] focus-visible:outline-none text-right'
             onChange={event => {
-              const input = event.target;
-
-              if (/^\d+$/.test(input.value)) {
-                const number = Number(input.value);
-
-                if (number <= 60) return minute.value = number;
-
-                updateError('Maximum s is 60');
-
-                if (number <= 99) return minute.value = 60;
-
-                minute.value = Number(number.toString().slice(0, 2));
-              } else {
-                if (input.value === '') return minute.value = 0;
-
-                updateError('Please type number');
-                const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
-
-                if (Number(newNumber) > 60) return minute.value = Number(newNumber.slice(0, 1));
-
-                minute.value = Number(newNumber);
-              }
+              onChange(event, minute, 'Maximum m is 60');
+              updateCacheTime();
             }}
-            onKeyDown={timerOnKeyDown}
+            onKeyDown={e => timerOnKeyDown(e, second)}
           />
           <span>
             <span className='text-sm text-gray-500' >s</span>
@@ -145,13 +164,19 @@ export const Timer = () => {
 
       <div className='grid grid-flow-col items-center justify-between w-[6.5rem] m-auto'>
         {isPlaying.value && <PauseCircleFilled
-          onClick={() => isPlaying.value = false}
+          onClick={() => {
+            pause();
+            isPlaying.value = false;
+          }}
           className='text-blue-400 cursor-pointer' />}
         {!isPlaying.value && <PlayCircleFilled
-          onClick={() => isPlaying.value = true}
+          onClick={() => {
+            countDown();
+            isPlaying.value = true;
+          }}
           className='text-blue-400 cursor-pointer' />}
 
-        <Tooltip title='reset' >
+        <Tooltip title='reset' placement='bottom' >
           <UndoOutlined
             onClick={(event) => {
               if (event.detail === 1) {
@@ -165,7 +190,8 @@ export const Timer = () => {
             onDoubleClick={() => {
               hint.value.ids?.forEach(clearTimeout);
               hint.value = ({});
-              // todo, reset
+              minute.value = cachedTime.value.minute;
+              second.value = cachedTime.value.second;
             }}
             className='text-blue-400 cursor-pointer select-none' />
         </Tooltip>
