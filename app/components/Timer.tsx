@@ -32,6 +32,8 @@ const isExpanded = signal(true);
 const isMuted = signal(false);
 const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
 const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
+const hour = signal(25);
+const minute = signal(0);
 
 const updateError = (message: string) => {
   if (error.value.id) clearTimeout(error.value.id);
@@ -62,7 +64,7 @@ export const Timer = () => {
         <span
           className='border-[1px] border-blue-100 inline-grid h-[3rem] grid-flow-col items-center focus-within:border-blue-300 text-2xl pr-1 focus-within:z-2 focus-within:relative rounded-l'>
           <input
-            defaultValue={25}
+            value={hour.value}
             className='border-blue-200 max-w-[2.25rem] focus-visible:outline-none text-right'
             onChange={event => {
               const input = event.target;
@@ -70,22 +72,22 @@ export const Timer = () => {
               if (/^\d+$/.test(input.value)) {
                 const number = Number(input.value);
 
-                if (number <= 60) return;
+                if (number <= 60) return hour.value = number;
 
                 updateError('Maximum m is 60');
 
-                if (number <= 99) return input.value = '60';
+                if (number <= 99) return hour.value = 60;
 
-                input.value = number.toString().slice(0, 2);
+                hour.value = Number(number.toString().slice(0, 2));
               } else {
-                if (input.value === '') return;
+                if (input.value === '') return hour.value = 0;
 
                 updateError('Please type number');
                 const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
 
-                if (Number(newNumber) > 60) return input.value = newNumber.slice(0, 1);
+                if (Number(newNumber) > 60) return hour.value = Number(newNumber.slice(0, 1));
 
-                input.value = newNumber;
+                hour.value = Number(newNumber);
               }
             }}
             onKeyDown={timerOnKeyDown}
@@ -99,7 +101,7 @@ export const Timer = () => {
           className='border-[1px] border-blue-100 inline-grid h-[3rem] grid-flow-col items-center focus-within:border-blue-300 text-2xl pr-1 ml-[-1px] rounded-r'
         >
           <input
-            defaultValue={0}
+            value={minute.value}
             className='border-blue-200 max-w-[2.25rem] focus-visible:outline-none text-right'
             onChange={event => {
               const input = event.target;
@@ -107,22 +109,22 @@ export const Timer = () => {
               if (/^\d+$/.test(input.value)) {
                 const number = Number(input.value);
 
-                if (number <= 60) return;
+                if (number <= 60) return minute.value = number;
 
                 updateError('Maximum s is 60');
 
-                if (number <= 99) return input.value = '60';
+                if (number <= 99) return minute.value = 60;
 
-                input.value = number.toString().slice(0, 2);
+                minute.value = Number(number.toString().slice(0, 2));
               } else {
-                if (input.value === '') return;
+                if (input.value === '') return minute.value = 0;
 
                 updateError('Please type number');
                 const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
 
-                if (Number(newNumber) > 60) return input.value = newNumber.slice(0, 1);
+                if (Number(newNumber) > 60) return minute.value = Number(newNumber.slice(0, 1));
 
-                input.value = newNumber;
+                minute.value = Number(newNumber);
               }
             }}
             onKeyDown={timerOnKeyDown}
