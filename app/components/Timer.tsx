@@ -1,6 +1,7 @@
 import { FieldTimeOutlined, PauseCircleFilled, PlayCircleFilled, UndoOutlined } from '@ant-design/icons';
 import { signal, Signal } from '@preact/signals-react';
-import { Alert, Tooltip } from 'antd';
+import { Alert, notification, Tooltip } from 'antd';
+import timerAudio from 'public/audio/timer-bell.mp3';
 
 const isPlaying = signal(false);
 const isExpanded = signal(true);
@@ -11,6 +12,7 @@ const minute = signal(25);
 const second = signal(0);
 const cachedTime = signal({ minute: minute.value, second: second.value });
 const timer = signal<NodeJS.Timeout | undefined>(undefined);
+const audio = signal<HTMLAudioElement | null>(null);
 
 const updateCacheTime = () => {
   cachedTime.value = {
@@ -54,7 +56,13 @@ const updateError = (message: string) => {
 const countDown = () => {
   const id = setInterval(() => {
     if (minute.value === 0 && second.value === 0) {
-      // todo, ring --
+      notification.info({ message: "Time's up!" });
+
+      if (!isMuted.value) {
+        audio.value?.play();
+        setTimeout(() => audio.value?.pause(), 4500);
+      }
+
       isPlaying.value = false;
       return pause();
     }
@@ -101,20 +109,24 @@ export const Timer = () => {
   };
 
   return <section className='p-2 pl-4'>
+    <audio
+      loop
+      ref={r => {
+        audio.value = r;
+      }}>
+      <source src={timerAudio} type='audio/mpeg' />
+    </audio>
+
     <FieldTimeOutlined
       onClick={() => isExpanded.value = !isExpanded.value}
       className='text-2xl cursor-pointer hover:text-blue-800' />
     {/* smart count down -- in time -- when minimize */}
-    {/* could pause timer? one click to pause, one click to resume */}
     {/* when paused -- gray out color / border */}
     {/* could hide completely on background */}
-    {/* music / sound set up? */}
-    {/* double click to expand to setting? */}
     {/* when minimize, if in count down, there's progress bar style circle border */}
 
     <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded.value ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
     >
-      {/* when disable, gray border */}
       <span>Timer</span>
 
       <div className='w-[6.5rem] grid grid-flow-col m-auto'>
@@ -143,7 +155,7 @@ export const Timer = () => {
             disabled={isPlaying.value}
             className='border-blue-200 max-w-[2.25rem] focus-visible:outline-none text-right'
             onChange={event => {
-              onChange(event, minute, 'Maximum m is 60');
+              onChange(event, second, 'Maximum m is 60');
               updateCacheTime();
             }}
             onKeyDown={e => timerOnKeyDown(e, second)}
@@ -199,7 +211,10 @@ export const Timer = () => {
           onClick={() => isMuted.value = false}
           className='cursor-pointer' >🔇</span>}
         {!isMuted.value && <span
-          onClick={() => isMuted.value = true}
+          onClick={() => {
+            audio.value?.pause();
+            isMuted.value = true;
+          }}
           className='cursor-pointer'>🔊</span>}
       </div>
       <div>
