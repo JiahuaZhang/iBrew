@@ -2,6 +2,7 @@ import { FieldTimeOutlined, PauseCircleFilled, PlayCircleFilled, UndoOutlined } 
 import { signal, Signal } from '@preact/signals-react';
 import { Alert, notification, Tooltip } from 'antd';
 import timerAudio from 'public/audio/timer-bell.mp3';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 const isPlaying = signal(false);
 const isExpanded = signal(true);
@@ -13,6 +14,7 @@ const second = signal(0);
 const cachedTime = signal({ minute: minute.value, second: second.value });
 const timer = signal<NodeJS.Timeout | undefined>(undefined);
 const audio = signal<HTMLAudioElement | null>(null);
+const percent = signal(1);
 
 const updateCacheTime = () => {
   cachedTime.value = {
@@ -53,6 +55,17 @@ const updateError = (message: string) => {
   error.value = ({ message, id });
 };
 
+const updatePercent = () => {
+  const { minute: min, second: sec } = cachedTime.value;
+  const currentMinute = minute.value;
+  const currentSecond = second.value;
+
+  const totalTime = min * 60 + sec;
+  const remainingTime = currentMinute * 60 + currentSecond;
+  const elapsedTime = totalTime - remainingTime;
+  percent.value = 100 * elapsedTime / totalTime;
+};
+
 const countDown = () => {
   const id = setInterval(() => {
     if (minute.value === 0 && second.value === 0) {
@@ -73,6 +86,7 @@ const countDown = () => {
       minute.value = minute.value - 1;
       second.value = 59;
     }
+    updatePercent();
   }, 1000);
 
   timer.value = id;
@@ -117,13 +131,18 @@ export const Timer = () => {
       <source src={timerAudio} type='audio/mpeg' />
     </audio>
 
-    <FieldTimeOutlined
+    {isPlaying.value && <div className='max-w-[3rem]' >
+      <CircularProgressbarWithChildren value={percent.value} strokeWidth={8} >
+        <FieldTimeOutlined
+          onClick={() => isExpanded.value = !isExpanded.value}
+          className='text-3xl cursor-pointer hover:text-blue-800 mt-[-6px] ml-[2px]' />
+      </CircularProgressbarWithChildren>
+    </div>}
+
+    {!isPlaying.value && <FieldTimeOutlined
       onClick={() => isExpanded.value = !isExpanded.value}
-      className='text-2xl cursor-pointer hover:text-blue-800' />
-    {/* smart count down -- in time -- when minimize */}
-    {/* when paused -- gray out color / border */}
-    {/* could hide completely on background */}
-    {/* when minimize, if in count down, there's progress bar style circle border */}
+      className='text-4xl cursor-pointer hover:text-blue-800' />
+    }
 
     <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded.value ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
     >

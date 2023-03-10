@@ -7,9 +7,13 @@ import {
   Scripts,
   ScrollRestoration
 } from "@remix-run/react";
+import circularStyle from 'react-circular-progressbar/dist/styles.css';
 import styles from '~/styles/app.css';
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: styles },
+  { rel: 'stylesheet', href: circularStyle },
+];
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
