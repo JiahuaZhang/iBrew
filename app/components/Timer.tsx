@@ -69,7 +69,7 @@ const updatePercent = () => {
 const countDown = () => {
   const id = setInterval(() => {
     if (minute.value === 0 && second.value === 0) {
-      notification.info({ message: "Time's up!" });
+      notification.info({ message: "Time's up!", onClose: () => audio.value?.pause() });
 
       if (!isMuted.value) {
         audio.value?.play();
