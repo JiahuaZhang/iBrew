@@ -5,7 +5,7 @@ import timerAudio from 'public/audio/timer-bell.mp3';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 const isPlaying = signal(false);
-const isExpanded = signal(true);
+const isExpanded = signal(false);
 const isMuted = signal(false);
 const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
 const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
@@ -14,7 +14,7 @@ const second = signal(0);
 const cachedTime = signal({ minute: minute.value, second: second.value });
 const timer = signal<NodeJS.Timeout | undefined>(undefined);
 const audio = signal<HTMLAudioElement | null>(null);
-const percent = signal(1);
+const percent = signal(0);
 
 const updateCacheTime = () => {
   cachedTime.value = {
