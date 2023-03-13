@@ -5,7 +5,7 @@ import timerAudio from 'public/audio/timer-bell.mp3';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 
 const isPlaying = signal(false);
-const isExpanded = signal(false);
+const isExpanded = signal(true);
 const isMuted = signal(false);
 const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
 const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
@@ -15,6 +15,7 @@ const cachedTime = signal({ minute: minute.value, second: second.value });
 const timer = signal<NodeJS.Timeout | undefined>(undefined);
 const audio = signal<HTMLAudioElement | null>(null);
 const percent = signal(0);
+const endTime = signal(new Date());
 
 const updateCacheTime = () => {
   cachedTime.value = {
@@ -66,9 +67,23 @@ const updatePercent = () => {
   percent.value = 100 * elapsedTime / totalTime;
 };
 
+const updateEndtime = () => {
+  const end = new Date();
+  end.setSeconds(end.getSeconds() + second.value);
+  end.setMinutes(end.getMinutes() + minute.value);
+  endTime.value = end;
+};
+
 const countDown = () => {
+  updateEndtime();
+
   const id = setInterval(() => {
-    if (minute.value === 0 && second.value === 0) {
+    const now = new Date();
+
+    if (now > endTime.value) {
+      second.value = 0;
+      minute.value = 0;
+
       notification.info({ message: "Time's up!", onClose: () => audio.value?.pause() });
 
       if (!isMuted.value) {
@@ -78,16 +93,16 @@ const countDown = () => {
 
       isPlaying.value = false;
       return pause();
-    }
-
-    if (second.value > 0) {
-      second.value = second.value - 1;
     } else {
-      minute.value = minute.value - 1;
-      second.value = 59;
+      const diffMilliseconds = endTime.value.getTime() - now.getTime();
+      const diffSeconds = Math.floor(diffMilliseconds / 1000);
+      const min = Math.floor(diffSeconds / 60);
+      const sec = diffSeconds % 60;
+      minute.value = min;
+      second.value = sec;
     }
     updatePercent();
-  }, 1000);
+  }, 800);
 
   timer.value = id;
 };
@@ -223,6 +238,7 @@ export const Timer = () => {
               hint.value = ({});
               minute.value = cachedTime.value.minute;
               second.value = cachedTime.value.second;
+              updateEndtime();
             }}
             className='text-blue-400 cursor-pointer select-none' />
         </Tooltip>
