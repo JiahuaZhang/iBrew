@@ -1,11 +1,12 @@
-import { FieldTimeOutlined, PauseCircleFilled, PlayCircleFilled, UndoOutlined } from '@ant-design/icons';
+import { PauseCircleFilled, PlayCircleFilled, UndoOutlined } from '@ant-design/icons';
 import { signal, Signal } from '@preact/signals-react';
 import { Alert, notification, Tooltip } from 'antd';
 import timerAudio from 'public/audio/timer-bell.mp3';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import { IoTimerOutline } from 'react-icons/io5';
 
 const isPlaying = signal(false);
-const isExpanded = signal(true);
+const isExpanded = signal(false);
 const isMuted = signal(false);
 const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
 const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
@@ -137,26 +138,24 @@ export const Timer = () => {
     }
   };
 
-  return <section className='p-2 pl-4'>
+  return <section className={`pl-2 ${isExpanded.value ? '' : 'inline-block'}`}>
     <audio
       loop
-      ref={r => {
-        audio.value = r;
-      }}>
+      ref={r => audio.value = r}>
       <source src={timerAudio} type='audio/mpeg' />
     </audio>
 
-    {isPlaying.value && <div className='max-w-[3rem]' >
+    {(isPlaying.value) && <div className='max-w-[3rem]' >
       <CircularProgressbarWithChildren value={percent.value} strokeWidth={8} >
-        <FieldTimeOutlined
+        <IoTimerOutline
           onClick={() => isExpanded.value = !isExpanded.value}
-          className='text-3xl cursor-pointer hover:text-blue-800 mt-[-6px] ml-[2px]' />
+          className='text-4xl cursor-pointer hover:text-blue-800 ' />
       </CircularProgressbarWithChildren>
     </div>}
 
-    {!isPlaying.value && <FieldTimeOutlined
+    {!isPlaying.value && <IoTimerOutline
       onClick={() => isExpanded.value = !isExpanded.value}
-      className='text-4xl cursor-pointer hover:text-blue-800' />
+      className='text-5xl cursor-pointer hover:text-blue-800' />
     }
 
     <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded.value ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}

@@ -3,6 +3,7 @@ import { Link, useLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
 import { LoginPanel } from '~/routes/(auth)/login';
+import { NaturalSound } from './NaturalSound';
 import { Timer } from './Timer';
 
 const colors = ['bg-slate-400', 'bg-gray-400', 'bg-zinc-400', 'bg-neutral-400', 'bg-stone-400', 'bg-red-400', 'bg-orange-400', 'bg-amber-400', 'bg-yellow-400', 'bg-lime-400', 'bg-green-400', 'bg-emerald-400', 'bg-teal-400', 'bg-cyan-400', 'bg-sky-400', 'bg-blue-400', 'bg-indigo-400', 'bg-violet-400', 'bg-purple-400', 'bg-fuchsia-400', 'bg-pink-400', 'bg-rose-400'];
@@ -60,8 +61,9 @@ const UserSidebar = () => {
       <header className='pl-2 bg-lime-100'>
         <ToolOutlined className='text-2xl' />
       </header>
-      <div>
+      <div className='p-2 border-2 border-purple-200' >
         <Timer />
+        <NaturalSound />
       </div>
     </div>
 
