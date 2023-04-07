@@ -11,8 +11,8 @@ import circularStyle from 'react-circular-progressbar/dist/styles.css';
 import styles from '~/styles/app.css';
 
 export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: styles },
   { rel: 'stylesheet', href: circularStyle },
+  { rel: 'stylesheet', href: styles },
 ];
 
 export const meta: MetaFunction = () => ({
