@@ -61,7 +61,7 @@ const UserSidebar = () => {
       <header className='pl-2 bg-lime-100'>
         <ToolOutlined className='text-2xl' />
       </header>
-      <div className='p-2 border-2 border-purple-200' >
+      <div className='p-2' >
         <Timer />
         <NaturalSound />
       </div>

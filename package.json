@@ -25,8 +25,7 @@
     "react-icons": "^4.8.0",
     "react-social-login-buttons": "^3.6.1",
     "remix-auth": "^3.4.0",
-    "remix-auth-socials": "^2.0.1",
-    "uuid": "^9.0.0"
+    "remix-auth-socials": "^2.0.1"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.12.0",
