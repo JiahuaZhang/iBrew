@@ -3,6 +3,7 @@ import { SoundButton } from './SoundButton';
 
 export const Rain = () => {
   return <SoundButton
+    id='rain'
     viewBoxDimension={16}
     src={rainAudio}
     path={<path

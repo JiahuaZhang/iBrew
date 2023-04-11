@@ -1,15 +1,14 @@
-import { computed, effect, Signal, signal } from '@preact/signals-react';
+import { computed, effect, Signal, useSignal } from '@preact/signals-react';
 import { CSSProperties } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
+  id: string;
   path: React.ReactNode;
   src: string;
   viewBoxDimension: number;
 };
 
 type ButtonProps = {
-  id: string;
   isPlaying: Signal<boolean>,
   audio: Signal<HTMLAudioElement | null>;
   style: Signal<CSSProperties>;
@@ -50,9 +49,9 @@ const SignalSoundButton = ({ id, isPlaying, audio, style, path, src, viewBoxDime
   </svg>;
 };
 
-export const SoundButton = ({ path, src, viewBoxDimension }: Props) => {
-  const isPlaying = signal(false);
-  const audio = signal<HTMLAudioElement | null>(null);
+export const SoundButton = ({ id, path, src, viewBoxDimension }: Props) => {
+  const isPlaying = useSignal(false);
+  const audio = useSignal<HTMLAudioElement | null>(null);
 
   effect(() => {
     if (isPlaying.value) {
@@ -62,15 +61,13 @@ export const SoundButton = ({ path, src, viewBoxDimension }: Props) => {
     }
   });
 
-  const style: Signal<CSSProperties> = computed(() => {
-    return isPlaying.value
-      ? { backgroundImage: 'linear-gradient(45deg, #ff4800, #dfd902, #20dc68, #0092f4, #da54d8)' }
-      : { backgroundColor: 'black' };
-  });
+  const style: Signal<CSSProperties> = computed(() => isPlaying.value
+    ? { backgroundImage: 'linear-gradient(45deg, #ff4800, #dfd902, #20dc68, #0092f4, #da54d8)' }
+    : { backgroundColor: 'black' });
 
   return <SignalSoundButton
     viewBoxDimension={viewBoxDimension}
-    id={uuidv4()}
+    id={`${id}-svg`}
     isPlaying={isPlaying}
     audio={audio}
     style={style}

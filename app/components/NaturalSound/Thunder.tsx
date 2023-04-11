@@ -3,6 +3,7 @@ import { SoundButton } from './SoundButton';
 
 export const Thunder = () => {
   return <SoundButton
+    id='thunder'
     viewBoxDimension={24}
     src={thunderAudio}
     path={
