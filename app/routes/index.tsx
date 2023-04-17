@@ -1,11 +1,5 @@
 import { MetaFunction } from '@remix-run/node';
-import type { LoaderFunction } from 'react-router';
 import UserSidebar from '~/components/UserSidebar';
-import { authenticator } from '~/services/auth.server';
-
-export const loader: LoaderFunction = ({ request }) => {
-  return authenticator.isAuthenticated(request);
-};
 
 export const meta: MetaFunction = () => ({ title: '🏠' });
 

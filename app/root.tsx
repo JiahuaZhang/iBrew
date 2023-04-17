@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,11 +7,14 @@ import {
   Scripts,
   ScrollRestoration
 } from "@remix-run/react";
-import circularStyle from 'react-circular-progressbar/dist/styles.css';
 import styles from '~/styles/app.css';
+import { GlobalCommandPalette, links as paletteLinks } from './components/Global/GlobalCommandPalette';
+import { links as timerLinks } from './components/Timer';
+import { authenticator } from './services/auth.server';
 
 export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: circularStyle },
+  ...timerLinks(),
+  ...paletteLinks(),
   { rel: 'stylesheet', href: styles },
 ];
 
@@ -21,6 +24,10 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
+export const loader: LoaderFunction = ({ request }: LoaderArgs) => {
+  return authenticator.isAuthenticated(request);
+};
+
 export default function App() {
   return (
     <html lang="en">
@@ -29,6 +36,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <GlobalCommandPalette />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
