@@ -1,6 +1,6 @@
 import { signal } from '@preact/signals-react';
 import type { LinksFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useRouteLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import CommandPalette, { JsonStructureItem, filterItems, renderJsonStructure, useHandleOpenCommandPalette } from 'react-cmdk';
 import styles from 'react-cmdk/dist/cmdk.css';
@@ -32,7 +32,7 @@ const page = signal(CommandPalettePage.Page);
 
 export const GlobalCommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useLoaderData();
+  const user = useRouteLoaderData('root');
   const skipRoutes = user === null ? '/logout' : '/login';
   const allowedPages = pages.filter(({ href }) => href !== skipRoutes);
 

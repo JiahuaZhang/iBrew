@@ -1,5 +1,5 @@
 import { HomeFilled, ToolOutlined } from '@ant-design/icons';
-import { Link, useLoaderData } from '@remix-run/react';
+import { Link, useRouteLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
 import { LoginPanel } from '~/routes/(auth)/login';
@@ -14,7 +14,7 @@ enum AvatarDisplay {
 }
 
 const UserSidebar = () => {
-  const user = useLoaderData();
+  const user = useRouteLoaderData('root') as any;
   const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.initial);
   // @ts-ignore @temp
   const nameInitials = user?.displayName.split(' ').map(s => s[0].toUpperCase()).join('') ?? '';
