@@ -1,9 +1,15 @@
 import { PauseCircleFilled, PlayCircleFilled, UndoOutlined } from '@ant-design/icons';
-import { signal, Signal } from '@preact/signals-react';
-import { Alert, notification, Tooltip } from 'antd';
+import { Signal, signal } from '@preact/signals-react';
+import { LinksFunction } from '@remix-run/node';
+import { Alert, Tooltip, notification } from 'antd';
 import timerAudio from 'public/audio/timer-bell.mp3';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import styles from 'react-circular-progressbar/dist/styles.css';
 import { IoTimerOutline } from 'react-icons/io5';
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: styles },
+];
 
 const isPlaying = signal(false);
 const isExpanded = signal(false);
