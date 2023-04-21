@@ -1,4 +1,3 @@
-import { signal } from '@preact/signals-react';
 import { FiMusic } from 'react-icons/fi';
 import { Bird } from './NaturalSound/Bird';
 import { Cricket } from './NaturalSound/Cricket';
@@ -8,17 +7,18 @@ import { Rain } from './NaturalSound/Rain';
 import { Thunder } from './NaturalSound/Thunder';
 import { Waterfall } from './NaturalSound/Waterfall';
 import { Wind } from './NaturalSound/Wind';
-
-const isExpanded = signal(false);
+import { useQueryState } from './hook/useQueryState';
 
 export const NaturalSound = () => {
-  return <div className={`${isExpanded.value ? '' : 'inline-block'}`} >
+  const { state, toggle } = useQueryState('tool', 'sound');
+
+  return <div className={`${state ? '' : 'inline-block'}`} >
     <FiMusic
       className='text-5xl cursor-pointer hover:text-blue-800'
-      onClick={() => isExpanded.value = !isExpanded.value}
+      onClick={toggle}
     />
     <div
-      className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded.value ? 'w-[10rem]' : 'w-0 h-0 opacity-0'}`}
+      className={`overflow-hidden transition-all ease-in-out duration-300 ${state ? 'w-[10rem]' : 'w-0 h-0 opacity-0'}`}
     >
       Natural Sound
       <br />

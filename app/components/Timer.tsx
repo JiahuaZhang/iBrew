@@ -6,13 +6,11 @@ import timerAudio from 'public/audio/timer-bell.mp3';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import styles from 'react-circular-progressbar/dist/styles.css';
 import { IoTimerOutline } from 'react-icons/io5';
+import { useQueryState } from './hook/useQueryState';
 
-export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: styles },
-];
+export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles },];
 
 const isPlaying = signal(false);
-const isExpanded = signal(false);
 const isMuted = signal(false);
 const error = signal<{ message?: string, id?: NodeJS.Timeout; }>({});
 const hint = signal<{ message?: string, ids?: NodeJS.Timeout[]; }>({});
@@ -119,32 +117,34 @@ const pause = () => {
   timer.value = undefined;
 };
 
+const onChange = (event: React.ChangeEvent<HTMLInputElement>, state: Signal<number>, errorMessage: string) => {
+  const input = event.target;
+
+  if (/^\d+$/.test(input.value)) {
+    const number = Number(input.value);
+
+    if (number <= 60) return state.value = number;
+
+    updateError(errorMessage);
+
+    if (number <= 99) return state.value = 60;
+    state.value = Number(number.toString().slice(0, 2));
+  } else {
+    if (input.value === '') return state.value = 0;
+
+    updateError('Please type number');
+
+    const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
+
+    if (Number(newNumber) > 60) return state.value = Number(newNumber.slice(0, 1));
+    state.value = Number(newNumber);
+  }
+};
+
 export const Timer = () => {
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>, state: Signal<number>, errorMessage: string) => {
-    const input = event.target;
+  const { state, toggle } = useQueryState('tool', 'timer');
 
-    if (/^\d+$/.test(input.value)) {
-      const number = Number(input.value);
-
-      if (number <= 60) return state.value = number;
-
-      updateError(errorMessage);
-
-      if (number <= 99) return state.value = 60;
-      state.value = Number(number.toString().slice(0, 2));
-    } else {
-      if (input.value === '') return state.value = 0;
-
-      updateError('Please type number');
-
-      const newNumber = input.value.replace(/[^0-9]/g, '').slice(0, 2);
-
-      if (Number(newNumber) > 60) return state.value = Number(newNumber.slice(0, 1));
-      state.value = Number(newNumber);
-    }
-  };
-
-  return <section className={`pl-2 ${isExpanded.value ? '' : 'inline-block'}`}>
+  return <section className={`pl-2 ${state ? '' : 'inline-block'}`}>
     <audio
       loop
       ref={r => audio.value = r}>
@@ -154,17 +154,17 @@ export const Timer = () => {
     {(isPlaying.value) && <div className='max-w-[3rem]' >
       <CircularProgressbarWithChildren value={percent.value} strokeWidth={8} >
         <IoTimerOutline
-          onClick={() => isExpanded.value = !isExpanded.value}
+          onClick={toggle}
           className='text-4xl cursor-pointer hover:text-blue-800 ' />
       </CircularProgressbarWithChildren>
     </div>}
 
     {!isPlaying.value && <IoTimerOutline
-      onClick={() => isExpanded.value = !isExpanded.value}
+      onClick={toggle}
       className='text-5xl cursor-pointer hover:text-blue-800' />
     }
 
-    <div className={`overflow-hidden transition-all ease-in-out duration-300 ${isExpanded.value ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
+    <div className={`overflow-hidden transition-all ease-in-out duration-300 ${state ? 'w-[10rem]' : 'w-0 h-0 opacity-0'} `}
     >
       <span>Timer</span>
 
