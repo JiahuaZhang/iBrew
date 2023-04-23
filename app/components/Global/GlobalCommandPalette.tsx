@@ -4,6 +4,7 @@ import { useRouteLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import CommandPalette, { JsonStructureItem, filterItems, renderJsonStructure, useHandleOpenCommandPalette } from 'react-cmdk';
 import styles from 'react-cmdk/dist/cmdk.css';
+import { AiFillHome } from 'react-icons/ai';
 import { IoLogInOutline, IoLogOutOutline } from 'react-icons/io5';
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
@@ -13,6 +14,12 @@ enum CommandPalettePage {
 }
 
 const pages: JsonStructureItem[] = [
+  {
+    children: 'Home',
+    id: 'page.home',
+    href: '/',
+    icon: AiFillHome
+  },
   {
     children: 'Login',
     id: 'page.login',
