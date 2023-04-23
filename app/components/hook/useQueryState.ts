@@ -39,13 +39,11 @@ const useCompositeQueryState = (query: string, value: string) => {
     setSearchParams(searchParams);
   };
 
-  return { state: param?.includes(value), toggle };
+  return { state: param?.includes(value) ?? false, toggle };
 };
 
-export function useQueryState(query: string): ReturnType<typeof useSimpleQueryState>;
-export function useQueryState(query: string, value: string): ReturnType<typeof useCompositeQueryState>;
-export function useQueryState(query: string, value?: string) {
-  if (!value) { return useSimpleQueryState(query); }
+export const useQueryState = (query: string, value?: string) => {
+  if (!value) return useSimpleQueryState(query);
 
   return useCompositeQueryState(query, value);
-}; 
+};
