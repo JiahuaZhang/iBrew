@@ -5,7 +5,7 @@ import { SocialsProvider } from 'remix-auth-socials';
 import { authenticator } from '~/services/auth.server';
 
 export const loader: LoaderFunction = async ({ request }) => authenticator
-  .isAuthenticated(request, { successRedirect: '/' });
+  .isAuthenticated(request, { successRedirect: '/home' });
 
 export const LoginPanel = ({ className }: { className?: string; }) => {
   const submit = useSubmit();
