@@ -1,7 +1,8 @@
 import { HomeFilled, ToolOutlined } from '@ant-design/icons';
-import { Link, useRouteLoaderData } from '@remix-run/react';
+import { Link, useLocation, useRouteLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
+import { RiStickyNoteFill } from 'react-icons/ri';
 import { LoginPanel } from '~/routes/(auth)/login';
 import { NaturalSound } from './NaturalSound';
 import { Timer } from './Timer';
@@ -18,6 +19,7 @@ const UserSidebar = () => {
   const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.initial);
   // @ts-ignore @temp
   const nameInitials = user?.displayName.split(' ').map(s => s[0].toUpperCase()).join('') ?? '';
+  const { pathname } = useLocation();
 
   return <aside className='border-2 border-purple-200' >
     {
@@ -52,9 +54,8 @@ const UserSidebar = () => {
       </section>
     }
 
-    <Link to='/' className='grid m-4' >
-      {/* todo, color filled should be changed base on whether at home page or not */}
-      <HomeFilled className='text-sky-400 text-2xl' />
+    <Link to='/home' className='grid m-4' >
+      <HomeFilled className={`${pathname === '/home' && 'text-sky-400'} text-2xl`} />
     </Link>
 
     <div>
@@ -64,6 +65,9 @@ const UserSidebar = () => {
       <div className='p-2' >
         <Timer />
         <NaturalSound />
+        <Link to='/home/note' className='inline-block' >
+          <RiStickyNoteFill className={`${pathname === '/home/note' && 'text-sky-400'} text-5xl`} />
+        </Link>
       </div>
     </div>
 
