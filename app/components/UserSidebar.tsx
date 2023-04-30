@@ -3,6 +3,7 @@ import { Link, useLocation, useRouteLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
 import { RiStickyNoteFill } from 'react-icons/ri';
+import { FacebookProfile, GoogleProfile } from 'remix-auth-socials';
 import { LoginPanel } from '~/routes/(auth)/login';
 import { NaturalSound } from './NaturalSound';
 import { Timer } from './Timer';
@@ -15,10 +16,9 @@ enum AvatarDisplay {
 }
 
 const UserSidebar = () => {
-  const user = useRouteLoaderData('root') as any;
+  const user = useRouteLoaderData('root') as (GoogleProfile | FacebookProfile);
   const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.initial);
-  // @ts-ignore @temp
-  const nameInitials = user?.displayName.split(' ').map(s => s[0].toUpperCase()).join('') ?? '';
+  const nameInitials = user?.displayName.split(' ').map(s => s[0].toUpperCase()).join('');
   const { pathname } = useLocation();
 
   return <aside className='border-2 border-purple-200' >

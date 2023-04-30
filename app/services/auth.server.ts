@@ -1,8 +1,8 @@
 import { Authenticator } from 'remix-auth';
-import { FacebookStrategy, GoogleStrategy, SocialsProvider } from 'remix-auth-socials';
+import { FacebookProfile, FacebookStrategy, GoogleProfile, GoogleStrategy, SocialsProvider } from 'remix-auth-socials';
 import { sessionStorage } from './session.server';
 
-export const authenticator = new Authenticator(sessionStorage);
+export const authenticator = new Authenticator<GoogleProfile | FacebookProfile>(sessionStorage);
 
 const getCallback = (provider: string) => `/auth/${provider}/callback`;
 
@@ -12,9 +12,7 @@ authenticator.use(new GoogleStrategy(
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     callbackURL: getCallback(SocialsProvider.GOOGLE)
   },
-  async ({ profile }) => {
-    return profile;
-  })
+  async ({ profile }) => profile)
 );
 
 authenticator.use(new FacebookStrategy(
@@ -23,7 +21,5 @@ authenticator.use(new FacebookStrategy(
     clientSecret: process.env.FACEBOOK_SECRET!,
     callbackURL: getCallback(SocialsProvider.FACEBOOK)
   },
-  async ({ profile }) => {
-    return profile;
-  })
+  async ({ profile }) => profile)
 );
