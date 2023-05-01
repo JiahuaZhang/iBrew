@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthProvider {
+  google
+  facebook
+}
+
+model SocialUser {
+  id         String
+  provider   AuthProvider
+  mainUser   User?        @relation("MainAccount", fields: [mainUserId], references: [id])
+  mainUserId Int?         @unique
+  user       User         @relation("Accounts", fields: [userId], references: [id])
+  userId     Int
+
+  @@unique([provider, id])
+}
+
+model User {
+  id       Int          @id @default(autoincrement())
+  main     SocialUser?  @relation("MainAccount")
+  accounts SocialUser[] @relation("Accounts")
+}
