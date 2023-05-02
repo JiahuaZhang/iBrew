@@ -1,6 +1,7 @@
+import { FacebookFilled, GoogleOutlined } from '@ant-design/icons';
 import { signal } from '@preact/signals-react';
 import type { LinksFunction } from '@remix-run/node';
-import { useRouteLoaderData } from '@remix-run/react';
+import { useRouteLoaderData, useSubmit } from '@remix-run/react';
 import { useState } from 'react';
 import CommandPalette, { JsonStructureItem, filterItems, renderJsonStructure, useHandleOpenCommandPalette } from 'react-cmdk';
 import styles from 'react-cmdk/dist/cmdk.css';
@@ -11,7 +12,11 @@ export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
 
 enum CommandPalettePage {
   Page = 'page',
+  Login = 'login'
 }
+
+const search = signal('');
+const page = signal(CommandPalettePage.Page);
 
 const pages: JsonStructureItem[] = [
   {
@@ -23,8 +28,12 @@ const pages: JsonStructureItem[] = [
   {
     children: 'Login',
     id: 'page.login',
-    href: '/login',
-    icon: IoLogInOutline
+    icon: IoLogInOutline,
+    closeOnSelect: false,
+    onClick: () => {
+      page.value = CommandPalettePage.Login;
+      search.value = '';
+    }
   },
   {
     children: 'Logout',
@@ -34,21 +43,40 @@ const pages: JsonStructureItem[] = [
   }
 ];
 
-const search = signal('');
-const page = signal(CommandPalettePage.Page);
-
 export const GlobalCommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useRouteLoaderData('root');
-  const skipRoutes = user === null ? '/logout' : '/login';
-  const allowedPages = pages.filter(({ href }) => href !== skipRoutes);
+  const skipId = user === null ? 'page.logout' : 'page.login';
+  const allowedPages = pages.filter(({ id }) => id !== skipId);
+  const submit = useSubmit();
 
   useHandleOpenCommandPalette(setIsOpen);
 
-  const pageItems = filterItems([{
-    id: 'page',
-    items: allowedPages
-  }], search.value);
+  const loginPages: JsonStructureItem[] = [
+    {
+      children: 'Login',
+      id: 'page.login',
+      href: '/login',
+      icon: IoLogInOutline,
+    },
+    {
+      children: 'google',
+      id: 'page.login.google',
+      href: '/auth/google',
+      icon: () => <GoogleOutlined className='text-blue-500 ' />,
+      onClick: () => submit(null, { method: 'post', action: '/auth/google' })
+    },
+    {
+      children: 'facebook',
+      id: 'page.login.facebook',
+      href: '/auth/facebook',
+      icon: () => <FacebookFilled className='text-blue-600' />,
+      onClick: () => submit(null, { method: 'post', action: '/auth/facebook' })
+    }
+  ];
+
+  const pageItems = filterItems([{ id: 'page', items: allowedPages }], search.value);
+  const loginPageItems = filterItems([{ id: 'page.login', items: loginPages }], search.value);
 
   return <CommandPalette
     onChangeSearch={value => search.value = value}
@@ -57,10 +85,12 @@ export const GlobalCommandPalette = () => {
     isOpen={isOpen}
     page={page.value}
   >
-    <CommandPalette.Page
-      id={CommandPalettePage.Page}
-    >
+    <CommandPalette.Page id={CommandPalettePage.Page}>
       {renderJsonStructure(pageItems)}
+    </CommandPalette.Page>
+
+    <CommandPalette.Page id={CommandPalettePage.Login} >
+      {renderJsonStructure(loginPageItems)}
     </CommandPalette.Page>
   </CommandPalette >;
 };
