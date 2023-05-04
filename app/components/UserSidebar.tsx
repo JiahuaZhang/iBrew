@@ -3,7 +3,7 @@ import { Link, useLocation, useRouteLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
 import { RiStickyNoteFill } from 'react-icons/ri';
-import { FacebookProfile, GoogleProfile } from 'remix-auth-socials';
+import { GlobalUser } from '~/root';
 import { LoginPanel } from '~/routes/(auth)/login';
 import { NaturalSound } from './NaturalSound';
 import { Timer } from './Timer';
@@ -16,14 +16,14 @@ enum AvatarDisplay {
 }
 
 const UserSidebar = () => {
-  const user = useRouteLoaderData('root') as (GoogleProfile | FacebookProfile);
+  const user = useRouteLoaderData('root') as GlobalUser | null;
   const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.initial);
-  const nameInitials = user?.displayName.split(' ').map(s => s[0].toUpperCase()).join('');
+  const nameInitials = user?.profile.displayName.split(' ').map(s => s[0].toUpperCase()).join('');
   const { pathname } = useLocation();
 
   return <aside className='border-2 border-purple-200' >
     {
-      user && <section className='cursor-pointer m-1 grid grid-flow-col justify-center align-center'
+      user?.profile && <section className='cursor-pointer m-1 grid grid-flow-col justify-center align-center'
         onDoubleClick={() => {
           setAvatarDisplay(prev => ({
             [AvatarDisplay.img]: AvatarDisplay.initial,
@@ -35,10 +35,10 @@ const UserSidebar = () => {
           <Link to='/logout'>Log out</Link>
         </Button>} >
           {avatarDisplay === AvatarDisplay.img &&
-            <Avatar src={user.photos[0].value} size='large' />}
+            <Avatar src={user.profile.photos[0].value} size='large' />}
           {avatarDisplay === AvatarDisplay.initial &&
             <Avatar
-              className={`${colors[nameInitials.charCodeAt(0) % colors.length]}`}
+              className={`${colors[nameInitials!.charCodeAt(0) % colors.length]}`}
               size='large'
               shape='circle'
             >

@@ -7,10 +7,12 @@ import {
   Scripts,
   ScrollRestoration
 } from "@remix-run/react";
+import { FacebookProfile, GoogleProfile } from 'remix-auth-socials';
 import { links as homeLinks } from '~/routes/home';
 import styles from '~/styles/app.css';
 import { GlobalCommandPalette, links as paletteLinks } from './components/Global/GlobalCommandPalette';
 import { authenticator } from './services/auth.server';
+import { getUser } from './services/database/prisma.db.server';
 
 export const links: LinksFunction = () => [
   ...homeLinks(),
@@ -24,8 +26,19 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-export const loader: LoaderFunction = ({ request }: LoaderArgs) => {
-  return authenticator.isAuthenticated(request);
+export type GlobalUser = {
+  profile: GoogleProfile | FacebookProfile;
+  user: Awaited<ReturnType<typeof getUser>>;
+};
+export const loader: LoaderFunction = async ({ request }: LoaderArgs) => {
+  const profile = await authenticator.isAuthenticated(request);
+
+  if (profile) {
+    const user = await getUser(profile.provider as any, profile.id);
+    return { profile, user } as GlobalUser;
+  }
+
+  return null;
 };
 
 export default function App() {
