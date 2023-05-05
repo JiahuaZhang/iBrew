@@ -1,9 +1,15 @@
-ctrl K
-just like vscode
-panel integration
-https://github.com/albingroen/react-cmdk
-https://github.com/timc1/kbar
-https://github.com/asabaylus/react-command-palette
+simple new draft
+intellj想要创建新的临时文件，真的还不如vscode
+所以，同理，我的note，要一个很简单的创建临时文件的
+自动生成一个temp的tag之类
+如果超过30天没读取、更新，则智能删除
+但是即便是临时生成的，也要很好的管理
+temp panel之类
+ctrl k -> quickly new
+
+抄袭workona
+improve it?
+calendar?
 
 Onenote/evernote的问题
 比如，我想先写下来，然后再决定存到哪里
