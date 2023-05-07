@@ -7,6 +7,7 @@ import CommandPalette, { JsonStructureItem, filterItems, renderJsonStructure, us
 import styles from 'react-cmdk/dist/cmdk.css';
 import { AiFillHome } from 'react-icons/ai';
 import { IoLogInOutline, IoLogOutOutline } from 'react-icons/io5';
+import { RiStickyNoteFill } from 'react-icons/ri';
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
 
@@ -18,12 +19,17 @@ enum CommandPalettePage {
 const search = signal('');
 const page = signal(CommandPalettePage.Page);
 
-const pages: JsonStructureItem[] = [
+enum PageRequirement {
+  authenticated = 'Authenticated',
+  unauthenticated = 'Unauthenticated'
+}
+
+const pages: (JsonStructureItem & { required?: PageRequirement; })[] = [
   {
     children: 'Home',
     id: 'page.home',
     href: '/',
-    icon: AiFillHome
+    icon: AiFillHome,
   },
   {
     children: 'Login',
@@ -33,21 +39,31 @@ const pages: JsonStructureItem[] = [
     onClick: () => {
       page.value = CommandPalettePage.Login;
       search.value = '';
-    }
+    },
+    required: PageRequirement.unauthenticated
   },
   {
     children: 'Logout',
     id: 'page.logout',
     href: '/logout',
-    icon: IoLogOutOutline
+    icon: IoLogOutOutline,
+    required: PageRequirement.authenticated
+  },
+  {
+    children: 'New',
+    id: 'page.new',
+    href: '/home/note/new',
+    icon: () => <RiStickyNoteFill />,
+    required: PageRequirement.authenticated
   }
 ];
+
+const getPages = (requirement: PageRequirement) => pages.filter(p => (!p.required) || (p.required === requirement));
 
 export const GlobalCommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
   const user = useRouteLoaderData('root');
-  const skipId = user === null ? 'page.logout' : 'page.login';
-  const allowedPages = pages.filter(({ id }) => id !== skipId);
+  const allowedPages = getPages(user === null ? PageRequirement.unauthenticated : PageRequirement.authenticated);
   const submit = useSubmit();
 
   useHandleOpenCommandPalette(setIsOpen);
