@@ -1,2 +1,5 @@
-const New = () => <section>create new note</section>;
+const New = () => {
+  return <main>create new note</main>;
+};
+
 export default New;
