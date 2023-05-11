@@ -2,6 +2,7 @@ import { HomeFilled, ToolOutlined } from '@ant-design/icons';
 import { Link, useLocation, useRouteLoaderData } from '@remix-run/react';
 import { Avatar, Button, Popover } from 'antd';
 import { useState } from 'react';
+import { CgTrack } from 'react-icons/cg';
 import { RiStickyNoteFill } from 'react-icons/ri';
 import { GlobalUser } from '~/root';
 import { LoginPanel } from '~/routes/(auth)/login';
@@ -15,9 +16,21 @@ enum AvatarDisplay {
   initial
 }
 
+const getLinkClass = (path: string, target: string) => {
+  if (path === target) {
+    return 'text-blue-600';
+  }
+
+  if (path.startsWith(target)) {
+    return 'text-sky-400';
+  }
+
+  return '';
+};
+
 const UserSidebar = () => {
   const user = useRouteLoaderData('root') as GlobalUser | null;
-  const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.initial);
+  const [avatarDisplay, setAvatarDisplay] = useState<AvatarDisplay>(AvatarDisplay.img);
   const nameInitials = user?.profile.displayName.split(' ').map(s => s[0].toUpperCase()).join('');
   const { pathname } = useLocation();
 
@@ -55,7 +68,7 @@ const UserSidebar = () => {
     }
 
     <Link to='/home' className='grid m-4' >
-      <HomeFilled className={`${pathname === '/home' && 'text-sky-400'} text-2xl`} />
+      <HomeFilled className={`${getLinkClass(pathname, '/home')} text-2xl`} />
     </Link>
 
     <div>
@@ -66,7 +79,10 @@ const UserSidebar = () => {
         <Timer />
         <NaturalSound />
         <Link to='/home/note' className='inline-block' >
-          <RiStickyNoteFill className={`${pathname === '/home/note' && 'text-sky-400'} text-5xl`} />
+          <RiStickyNoteFill className={`${getLinkClass(pathname, '/home/note')} text-5xl`} />
+        </Link>
+        <Link to='/home/track' className='inline-block' >
+          <CgTrack className={`${getLinkClass(pathname, '/home/track')} text-5xl`} />
         </Link>
       </div>
     </div>

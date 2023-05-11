@@ -28,7 +28,7 @@ const pages: (JsonStructureItem & { required?: PageRequirement; })[] = [
   {
     children: 'Home',
     id: 'page.home',
-    href: '/',
+    href: '/home',
     icon: AiFillHome,
   },
   {
@@ -52,7 +52,7 @@ const pages: (JsonStructureItem & { required?: PageRequirement; })[] = [
   {
     children: 'New',
     id: 'page.new',
-    href: '/home/note/new',
+    href: '/home/track/new',
     icon: () => <RiStickyNoteFill />,
     required: PageRequirement.authenticated
   }
