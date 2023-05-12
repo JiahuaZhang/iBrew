@@ -1,13 +1,13 @@
 import { FiMusic } from 'react-icons/fi';
-import { Bird } from './NaturalSound/Bird';
-import { Cricket } from './NaturalSound/Cricket';
-import { Fire } from './NaturalSound/Fire';
-import { Ocean } from './NaturalSound/Ocean';
-import { Rain } from './NaturalSound/Rain';
-import { Thunder } from './NaturalSound/Thunder';
-import { Waterfall } from './NaturalSound/Waterfall';
-import { Wind } from './NaturalSound/Wind';
-import { useQueryState } from './hook/useQueryState';
+import { Bird } from './Bird';
+import { Cricket } from './Cricket';
+import { Fire } from './Fire';
+import { Ocean } from './Ocean';
+import { Rain } from './Rain';
+import { Thunder } from './Thunder';
+import { Waterfall } from './Waterfall';
+import { Wind } from './Wind';
+import { useQueryState } from '../../../components/hook/useQueryState';
 
 export const NaturalSound = () => {
   const { state, toggle } = useQueryState('tool', 'sound');

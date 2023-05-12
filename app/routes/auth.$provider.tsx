@@ -1,6 +1,6 @@
 import type { ActionFunction } from '@remix-run/node';
 import { LoaderFunction, redirect } from 'react-router';
-import { authenticator } from '../../services/auth.server';
+import { authenticator } from '~/services/auth.server';
 
 export const loader: LoaderFunction = () => redirect('/login');
 

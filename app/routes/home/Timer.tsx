@@ -6,7 +6,7 @@ import timerAudio from 'public/audio/timer-bell.mp3';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import styles from 'react-circular-progressbar/dist/styles.css';
 import { IoTimerOutline } from 'react-icons/io5';
-import { useQueryState } from './hook/useQueryState';
+import { useQueryState } from '../../components/hook/useQueryState';
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles },];
 

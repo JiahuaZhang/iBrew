@@ -1,7 +1,7 @@
 import { LinksFunction } from '@remix-run/node';
 import { Outlet } from '@remix-run/react';
-import { links as timerLinks } from '~/components/Timer';
-import UserSidebar from '~/components/UserSidebar';
+import { links as timerLinks } from '~/routes/home/Timer';
+import UserSidebar from './UserSidebar';
 
 export const links: LinksFunction = () => [...timerLinks()];
 

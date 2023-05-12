@@ -1,14 +1,15 @@
-import type { LinksFunction, LoaderArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, LoaderFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration
+  ScrollRestoration,
+  V2_MetaFunction
 } from "@remix-run/react";
 import { FacebookProfile, GoogleProfile } from 'remix-auth-socials';
-import { links as homeLinks } from '~/routes/home';
+import { links as homeLinks } from '~/routes/home/route';
 import styles from '~/styles/app.css';
 import { GlobalCommandPalette, links as paletteLinks } from './components/Global/GlobalCommandPalette';
 import { authenticator } from './services/auth.server';
@@ -20,11 +21,11 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: styles },
 ];
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "iBrew",
-  viewport: "width=device-width,initial-scale=1",
-});
+export const meta: V2_MetaFunction = () => [
+  { charset: "utf-8" },
+  { title: 'iBrew' },
+  { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+];
 
 export type GlobalUser = {
   profile: GoogleProfile | FacebookProfile;

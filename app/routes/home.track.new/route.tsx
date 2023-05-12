@@ -1,7 +1,7 @@
 import { Tabs, type TabsProps } from 'antd';
 import { BiCog } from 'react-icons/bi';
 import { MdArticle } from 'react-icons/md';
-import { TrackContent } from '~/components/track/content/TrackContent';
+import { TrackContent } from '~/routes/home.track.new/TrackContent';
 
 // todo
 // global command to toggle between panel?

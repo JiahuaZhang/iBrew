@@ -1,6 +1,6 @@
-import { MetaFunction } from '@remix-run/node';
+import { V2_MetaFunction } from '@remix-run/react';
 
-export const meta: MetaFunction = () => ({ title: '🏠' });
+export const meta: V2_MetaFunction = () => [{ title: '🏠' }];
 
 const Index = () => {
   return <main>main component</main>;
