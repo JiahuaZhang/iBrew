@@ -55,7 +55,7 @@ const ContentTags = () => {
         if (editInputIndex.value === index) {
           return (
             <Input
-              className='max-w-[100px] align-top text-xl py-1 px-2 mr-2'
+              className='max-w-[100px] align-top text-lg py-1 px-2 mr-2'
               ref={r => editInputRef.value = r}
               key={tag}
               size="small"
@@ -69,8 +69,9 @@ const ContentTags = () => {
         const isLongTag = tag.length > 20;
         const tagElem = (
           <Tag
-            className='inline-flex items-center text-xl py-1 px-2 gap-2 border-2 border-slate-200 hover:border-blue-500'
+            className='inline-flex items-center text-lg py-1 px-2 gap-2 outline-3 hover:outline-orange-500 outline'
             key={tag}
+            color='#108ee9'
           >
             <span
               onDoubleClick={(e) => {
@@ -97,7 +98,7 @@ const ContentTags = () => {
 
       {inputVisible.value ? (
         <Input
-          className='max-w-[150px] align-top text-xl py-1 px-2'
+          className='max-w-[150px] align-top text-lg py-1 px-2'
           ref={r => inputRef.value = r}
           type="text"
           size="small"
@@ -108,7 +109,8 @@ const ContentTags = () => {
         />
       ) : (
         <Tag
-          className='inline-flex items-center text-xl py-1 px-2 gap-2 cursor-pointer hover:border-2 hover:border-blue-500'
+          className='inline-flex items-center text-lg py-1 px-2 gap-2 cursor-pointer outline-3 outline-zinc-100 hover:outline-orange-500 outline'
+          color='#5ab0f5'
           onClick={() => inputVisible.value = true}>
           <PlusOutlined /> New Tag
         </Tag>
