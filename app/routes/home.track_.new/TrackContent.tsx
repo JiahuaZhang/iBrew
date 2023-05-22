@@ -1,30 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { effect, signal } from '@preact/signals-react';
 import { Input, InputRef, Tag, Tooltip, notification } from 'antd';
-import { useEffect, useRef } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
-
-const title = signal('');
-const AutoResizingTextarea = () => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [title.value]);
-
-  return (
-    <textarea
-      placeholder='Title'
-      rows={1}
-      ref={textareaRef}
-      className="w-full text-4xl p-2 text-center overflow-hidden resize-none focus:border-2  focus:outline-none focus:border-blue-500 transition-all duration-200 ease-in-out placeholder:italic"
-      value={title.value}
-      onChange={(e) => title.value = e.target.value} />
-  );
-};
+import { ContentEditor } from './ContentEditor';
 
 const tags = signal<string[]>([]);
 const inputVisible = signal(false);
@@ -139,18 +117,12 @@ const ContentTags = () => {
   );
 };
 
-
-const content = signal({});
+// todo, sync up all state, include child part as well
 export const TrackContent = () => {
 
   return <div className='border-0 border-gray-200 w-full' >
-    <AutoResizingTextarea />
-
-    <section>
-      Editor part
-    </section>
-
+    <ContentEditor />
     <ContentTags />
-
+    {/* todo: add button to svae, control / command + s to auto save */}
   </div>;
 };
