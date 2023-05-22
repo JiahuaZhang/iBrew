@@ -50,7 +50,7 @@ effect(() => {
 effect(() => editInputRef.value?.focus());
 const ContentTags = () => {
   return (
-    <div className='pl-2 flex-wrap gap-y-2 inline-flex' >
+    <div className='pr-2 flex-wrap gap-y-2 inline-flex justify-end w-full' >
       {tags.value.map((tag, index) => {
         if (editInputIndex.value === index) {
           return (
