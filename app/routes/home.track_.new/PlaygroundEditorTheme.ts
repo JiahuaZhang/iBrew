@@ -66,7 +66,7 @@ export const theme: EditorThemeClasses = {
       'PlaygroundEditorTheme__ol4',
       'PlaygroundEditorTheme__ol5',
     ],
-    ul: 'p-0 m-0 list-inside list-disc [&>li>span]:ml-[-12px]',
+    ul: 'p-0 m-0 list-inside list-disc [&>li>span]:ml-[-12px] [&>li[role="checkbox"]>span]:ml-0',
     ol: 'p-0 m-0 list-inside list-decimal',
   },
   ltr: 'PlaygroundEditorTheme__ltr',

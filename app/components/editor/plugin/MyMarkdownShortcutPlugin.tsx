@@ -59,7 +59,6 @@ export const MARKDOWN_TRANSFORMERS: Transformer[] = [
   // todo [src](description) style link supports later
   // IMAGE,
   EMOJI,
-  // todo, update check list tailwind css style
   CHECK_LIST,
   ...ELEMENT_TRANSFORMERS,
   ...TEXT_FORMAT_TRANSFORMERS,
