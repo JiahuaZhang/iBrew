@@ -1,20 +1,26 @@
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { HashtagNode } from '@lexical/hashtag';
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListItemNode, ListNode } from "@lexical/list";
-import { TRANSFORMERS } from "@lexical/markdown";
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { InitialConfigType, LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { effect, signal } from '@preact/signals-react';
+import { MyLinkPlugin } from '~/components/editor/plugin/MyLinkPlugin';
+import { MyMarkdownShortcutPlugin } from '~/components/editor/plugin/MyMarkdownShortcutPlugin';
+import { theme } from './PlaygroundEditorTheme';
 
+// todo? image node? twitter nodes?
 const initialConfig: InitialConfigType = {
   namespace: 'Track Content',
   nodes: [
@@ -28,19 +34,23 @@ const initialConfig: InitialConfigType = {
     TableCellNode,
     TableRowNode,
     AutoLinkNode,
-    LinkNode
+    LinkNode,
+    HashtagNode,
+    HorizontalRuleNode
   ],
   onError: console.error,
+  theme,
+  // editable: false
 };
 
 export const content = signal<Record<string, any>>({});
-
+// todo, debounce fn later on
 effect(() => {
-  console.log(content.value);
+  // console.log(content.value);
 });
 
 export const ContentEditor = () => {
-  return <LexicalComposer initialConfig={initialConfig}>
+  return <LexicalComposer initialConfig={initialConfig} >
     <div className="relative m-4 rounded border-2 border-gray-200 text-xl">
       <RichTextPlugin
         contentEditable={
@@ -53,11 +63,14 @@ export const ContentEditor = () => {
         }
         ErrorBoundary={LexicalErrorBoundary}
       />
+      <AutoFocusPlugin />
       <OnChangePlugin onChange={editorState => content.value = editorState.toJSON()} />
       <ListPlugin />
+      <CheckListPlugin />
       <TabIndentationPlugin />
       <HistoryPlugin />
-      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+      <MyLinkPlugin />
+      <MyMarkdownShortcutPlugin />
     </div>
   </LexicalComposer>;
 };

@@ -1,3 +1,16 @@
+例子：
+掌门低调点 235 周一
+https://www.colamanhua.com/manga-xh97848/
+#manga /poll {$monday}
+
+/list
+smart #tag management
+#(no tag) [last one]
+? how to store these, persist these automatically with database?
+
+?group ?categroay
+(by tag) (by poll)
+
 先更具体的追剧之类
 timeline、calendar的设计？
 甚至是？一个很具体的番剧等等的综合、杂谈、感想、时间提醒等等
