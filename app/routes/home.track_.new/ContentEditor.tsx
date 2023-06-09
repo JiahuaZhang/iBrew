@@ -16,6 +16,7 @@ import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { effect, signal } from '@preact/signals-react';
+import { MyHashTagPlugin } from '~/components/editor/plugin/MyHashTag';
 import { MyLinkPlugin } from '~/components/editor/plugin/MyLinkPlugin';
 import { MyMarkdownShortcutPlugin } from '~/components/editor/plugin/MyMarkdownShortcutPlugin';
 import { theme } from './PlaygroundEditorTheme';
@@ -35,6 +36,7 @@ const initialConfig: InitialConfigType = {
     TableRowNode,
     AutoLinkNode,
     LinkNode,
+    // todo, hashtags style?
     HashtagNode,
     HorizontalRuleNode
   ],
@@ -69,8 +71,16 @@ export const ContentEditor = () => {
       <CheckListPlugin />
       <TabIndentationPlugin />
       <HistoryPlugin />
+
+      <MyHashTagPlugin />
       <MyLinkPlugin />
       <MyMarkdownShortcutPlugin />
+      {/* todo, /dropdown option, ctrl+k similar command */}
+      {/* /config, /command, /register, /daily panel stuff, subscription etc */}
+      {/* database related (cached /new route content, cached today's subscription (what if today's had subscripted, but add a new one as well?) ) */}
+      {/* tag panels */}
+      {/* subscription panel -- could refresh today's subscription */}
+      {/* jumping, navigation link */}
     </div>
   </LexicalComposer>;
 };
