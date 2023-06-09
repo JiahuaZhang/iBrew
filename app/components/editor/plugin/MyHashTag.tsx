@@ -3,19 +3,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { useLexicalTextEntity } from '@lexical/react/useLexicalTextEntity';
 import { useCallback, useEffect } from 'react';
 
-// const text = "Let's go #帅气+逼人, #拉风!";
-// const hashtags = text.match(/#[-\p{L}\p{N}_]+(?=[^\p{L}\p{N}_-]|$)/gu);
-// console.log(hashtags);  // ["#帅气-逼人", "#拉风"]
-
 export const REGEX = /#[-\p{L}\p{N}_]+(?=[^\p{L}\p{N}_-]|$)/iu;
-
-// todo, write test on the hashtag
-// #apple => #apple
-// #apple,banana => #apple
-// #foo-bar => #foo-bar
-// #foo-bar,#bar_baz => #foo-bar, #bar_baz
-// #foo---bar => #foo---bar
-// #- => #-
 
 export const MyHashTagPlugin = () => {
   const [editor] = useLexicalComposerContext();
