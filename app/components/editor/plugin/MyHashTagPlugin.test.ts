@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { REGEX } from './MyHashTag';
+import { REGEX } from './MyHashTagPlugin';
 
 test('simple # match all', () => {
   const arr = ['foo', 'bar', 'baz'];
