@@ -16,7 +16,7 @@ import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { effect, signal } from '@preact/signals-react';
-import { MyHashTagPlugin } from '~/components/editor/plugin/MyHashTag';
+import { MyHashTagPlugin } from '~/components/editor/plugin/MyHashTagPlugin';
 import { MyLinkPlugin } from '~/components/editor/plugin/MyLinkPlugin';
 import { MyMarkdownShortcutPlugin } from '~/components/editor/plugin/MyMarkdownShortcutPlugin';
 import { theme } from './PlaygroundEditorTheme';
