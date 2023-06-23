@@ -9,6 +9,7 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
+import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin';
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -16,6 +17,7 @@ import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { effect, signal } from '@preact/signals-react';
+import { MyCommandPlugin } from '~/components/editor/plugin/MyCommandPlugin';
 import { MyHashTagPlugin } from '~/components/editor/plugin/MyHashTagPlugin';
 import { MyLinkPlugin } from '~/components/editor/plugin/MyLinkPlugin';
 import { MyMarkdownShortcutPlugin } from '~/components/editor/plugin/MyMarkdownShortcutPlugin';
@@ -71,10 +73,12 @@ export const ContentEditor = () => {
       <CheckListPlugin />
       <TabIndentationPlugin />
       <HistoryPlugin />
+      <HorizontalRulePlugin />
 
       <MyHashTagPlugin />
       <MyLinkPlugin />
       <MyMarkdownShortcutPlugin />
+      <MyCommandPlugin />
       {/* todo, /dropdown option, ctrl+k similar command */}
       {/* /config, /command, /register, /daily panel stuff, subscription etc */}
       {/* database related (cached /new route content, cached today's subscription (what if today's had subscripted, but add a new one as well?) ) */}
