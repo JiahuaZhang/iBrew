@@ -14,6 +14,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { effect, signal } from '@preact/signals-react';
@@ -38,7 +39,6 @@ const initialConfig: InitialConfigType = {
     TableRowNode,
     AutoLinkNode,
     LinkNode,
-    // todo, hashtags style?
     HashtagNode,
     HorizontalRuleNode
   ],
@@ -74,6 +74,7 @@ export const ContentEditor = () => {
       <TabIndentationPlugin />
       <HistoryPlugin />
       <HorizontalRulePlugin />
+      <TablePlugin />
 
       <MyHashTagPlugin />
       <MyLinkPlugin />
